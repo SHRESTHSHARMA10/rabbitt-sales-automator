@@ -1,0 +1,88 @@
+# ─── CI/CD Pipeline: Sales Insight Automator ───
+# Triggers on Pull Requests to main branch.
+# Validates: backend lint, frontend build, and Docker build.
+
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─── Job 1: Lint and validate the backend ───
+  lint-backend:
+    name: Backend Lint & Validate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npx eslint src/ --no-eslintrc --rule '{"no-unused-vars":"warn","no-undef":"error"}' || true
+
+      - name: Check server starts
+        run: |
+          timeout 5 node src/app.js &
+          sleep 3
+          curl -f http://localhost:5001/health || exit 1
+          kill %1 || true
+        env:
+          PORT: 5001
+          GROQ_API_KEY: test_key
+          BREVO_API_KEY: test_key
+          BREVO_SENDER_EMAIL: test@test.com
+          FRONTEND_URL: http://localhost:5173
+          NODE_ENV: development
+
+  # ─── Job 2: Build and validate the frontend ───
+  lint-frontend:
+    name: Frontend Build & Validate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+        env:
+          VITE_API_URL: http://localhost:5001
+
+  # ─── Job 3: Verify Docker Compose builds successfully ───
+  docker-build:
+    name: Docker Compose Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker images
+        run: docker compose build

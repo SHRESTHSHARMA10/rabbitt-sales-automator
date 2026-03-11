@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # ─── Backend: Express.js API ───
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sales-backend
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - BREVO_API_KEY=${BREVO_API_KEY}
+      - BREVO_SENDER_EMAIL=${BREVO_SENDER_EMAIL}
+      - FRONTEND_URL=http://localhost
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  # ─── Frontend: React app served by nginx ───
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:5001
+    container_name: sales-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
