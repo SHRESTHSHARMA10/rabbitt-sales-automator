@@ -49,16 +49,6 @@ app.use('/api/upload', uploadRouter);
 // ─── Swagger API Docs: available at /api-docs ───
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// ─── Root route: basic API info ───
-app.get('/', (req, res) => {
-  res.json({
-    status: 'ok',
-    message: 'Sales Insight Automator API is running!',
-    docs: '/api-docs',
-    health: '/health',
-  });
-});
-
 // ─── Health check endpoint (useful for deployment monitoring) ───
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
