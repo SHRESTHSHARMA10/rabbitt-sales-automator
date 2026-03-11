@@ -36,6 +36,10 @@ app.use(express.json());
 // ─── Parse URL-encoded form data ───
 app.use(express.urlencoded({ extended: true }));
 
+// ─── Trust proxy: needed when behind nginx/reverse proxy (Docker, Render, etc.) ───
+// Without this, express-rate-limit sees all requests as coming from the same IP.
+app.set('trust proxy', 1);
+
 // ─── Rate limiting: applies to all /api routes ───
 app.use('/api', apiLimiter);
 
