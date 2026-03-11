@@ -10,9 +10,9 @@ Built as a placement assignment for **Rabbitt AI**.
 
 | Service  | URL |
 |----------|-----|
-| Frontend | _[Add Vercel URL after deployment]_ |
-| Backend  | _[Add Render URL after deployment]_ |
-| API Docs | _[Add Render URL]/api-docs_ |
+| Frontend | https://rabbitt-sales-automator.vercel.app |
+| Backend  | https://sales-insight-automator-api.onrender.com |
+| API Docs | https://sales-insight-automator-api.onrender.com/api-docs |
 
 ---
 

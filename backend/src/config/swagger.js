@@ -13,13 +13,17 @@ const swaggerOptions = {
       version: '1.0.0',
       description:
         'Upload a CSV/XLSX sales file and receive an AI-generated summary report via email. ' +
-        'Powered by Groq (Llama 3) for analysis and Resend for email delivery.',
+        'Powered by Groq (Llama 3.1) for analysis and Brevo for email delivery.',
       contact: {
         name: 'Rabbitt AI',
       },
     },
 
     servers: [
+      {
+        url: 'https://sales-insight-automator-api.onrender.com',
+        description: 'Production server',
+      },
       {
         url: `http://localhost:${process.env.PORT || 5001}`,
         description: 'Local development server',
