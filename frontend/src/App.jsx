@@ -66,7 +66,7 @@ const App = () => {
 
       {/* ─── Footer ─── */}
       <footer className="footer">
-        Powered by Rabbitt AI &middot; Groq (Llama 3) &middot; Resend
+        Powered by Groq (Llama 3.1) &middot; Brevo &middot; React + Express
       </footer>
     </div>
   );
